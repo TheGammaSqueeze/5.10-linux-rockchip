@@ -30,7 +30,7 @@
 #include <linux/jiffies.h>
 
 /*----------------------------------------------------------------------------*/
-#define DRV_NAME "rocknix-singleadc-joypad"
+#define DRV_NAME "singleadc-joypad"
 /*----------------------------------------------------------------------------*/
 #define	ADC_MAX_VOLTAGE		1800
 #define	ADC_DATA_TUNING(x, p)	((x * p) / 100)
@@ -142,8 +142,8 @@ struct joypad {
 	/* report reference point */
 	bool invert_absx;
 	bool invert_absy;
-	bool invert_absrx;
-	bool invert_absry;
+	bool invert_absz;
+	bool invert_absrz;
 
 	/* report interval (ms) */
 	int bt_gpio_count;
@@ -252,11 +252,11 @@ static int joypad_amux_select(struct analog_mux *amux, int channel)
 	gpio_set_value(amux->en_gpio, 0);
 
 	switch(channel) {
-		case 0:	/* EVENT (ABS_RY) */
+		case 0:	/* EVENT (ABS_RZ) */
 			gpio_set_value(amux->sel_a_gpio, 0);
 			gpio_set_value(amux->sel_b_gpio, 0);
 			break;
-		case 1:	/* EVENT (ABS_RX) */
+		case 1:	/* EVENT (ABS_Z) */
 			gpio_set_value(amux->sel_a_gpio, 0);
 			gpio_set_value(amux->sel_b_gpio, 1);
 			break;
@@ -840,8 +840,8 @@ static void joypad_poll(struct input_polled_dev *poll_dev)
 			 */
 			input_report_abs(poll_dev->input, ABS_X,  joypad->miyoo.left_x);
 			input_report_abs(poll_dev->input, ABS_Y,  joypad->miyoo.left_y);
-			input_report_abs(poll_dev->input, ABS_RX, joypad->miyoo.right_x);
-			input_report_abs(poll_dev->input, ABS_RY, joypad->miyoo.right_y);
+			input_report_abs(poll_dev->input, ABS_Z, joypad->miyoo.right_x);
+			input_report_abs(poll_dev->input, ABS_RZ, joypad->miyoo.right_y);
 			input_sync(poll_dev->input);
 
 			joypad_gpio_check(poll_dev);
@@ -1023,28 +1023,28 @@ static int joypad_adc_setup(struct device *dev, struct joypad *joypad)
 
 		switch (nbtn) {
 			case 0:
-				if (joypad->invert_absry)
+				if (joypad->invert_absrz)
 					adc->invert = true;
-				adc->report_type = ABS_RY;
+				adc->report_type = ABS_RZ;
 				if (device_property_read_u32(dev,
-					"abs_ry-p-tuning",
+					"abs_rz-p-tuning",
 					&adc->tuning_p))
 					adc->tuning_p = ADC_TUNING_DEFAULT;
 				if (device_property_read_u32(dev,
-					"abs_ry-n-tuning",
+					"abs_rz-n-tuning",
 					&adc->tuning_n))
 					adc->tuning_n = ADC_TUNING_DEFAULT;
 				break;
 			case 1:
-				if (joypad->invert_absrx)
+				if (joypad->invert_absz)
 					adc->invert = true;
-				adc->report_type = ABS_RX;
+				adc->report_type = ABS_Z;
 				if (device_property_read_u32(dev,
-					"abs_rx-p-tuning",
+					"abs_z-p-tuning",
 					&adc->tuning_p))
 					adc->tuning_p = ADC_TUNING_DEFAULT;
 				if (device_property_read_u32(dev,
-					"abs_rx-n-tuning",
+					"abs_z-n-tuning",
 					&adc->tuning_n))
 					adc->tuning_n = ADC_TUNING_DEFAULT;
 				break;
@@ -1266,16 +1266,16 @@ static int joypad_input_setup(struct device *dev, struct joypad *joypad)
 
 	/*
 	 * For the Miyoo serial approach, we’ll also ensure that
-	 * ABS_X, ABS_Y, ABS_RX, ABS_RY are defined ([-32760..32760]) if used:
+	 * ABS_X, ABS_Y, ABS_Z, ABS_RZ are defined ([-32760..32760]) if used:
 	 */
 	if (joypad->use_miyoo_serial) {
 		input_set_abs_params(input, ABS_X,
 				     MIYOO_AXIS_MIN, MIYOO_AXIS_MAX, 16, 16);
 		input_set_abs_params(input, ABS_Y,
 				     MIYOO_AXIS_MIN, MIYOO_AXIS_MAX, 16, 16);
-		input_set_abs_params(input, ABS_RX,
+		input_set_abs_params(input, ABS_Z,
 				     MIYOO_AXIS_MIN, MIYOO_AXIS_MAX, 16, 16);
-		input_set_abs_params(input, ABS_RY,
+		input_set_abs_params(input, ABS_RZ,
 				     MIYOO_AXIS_MIN, MIYOO_AXIS_MAX, 16, 16);
 	}
 
@@ -1659,10 +1659,10 @@ static int joypad_dt_parse(struct device *dev, struct joypad *joypad)
 	/* change the report reference point? (ADC MAX - read value) */
 	joypad->invert_absx = device_property_present(dev, "invert-absx");
 	joypad->invert_absy = device_property_present(dev, "invert-absy");
-	joypad->invert_absrx = device_property_present(dev, "invert-absrx");
-	joypad->invert_absry = device_property_present(dev, "invert-absry");
-	dev_info(dev, "%s : invert-absx = %d, inveret-absy = %d, invert-absrx = %d, invert-absry = %d\n",
-		__func__, joypad->invert_absx, joypad->invert_absy, joypad->invert_absrx, joypad->invert_absry);
+	joypad->invert_absz = device_property_present(dev, "invert-absz");
+	joypad->invert_absrz = device_property_present(dev, "invert-absrz");
+	dev_info(dev, "%s : invert-absx = %d, inveret-absy = %d, invert-absz = %d, invert-absrz = %d\n",
+		__func__, joypad->invert_absx, joypad->invert_absy, joypad->invert_absz, joypad->invert_absrz);
 
 	joypad->bt_gpio_count = device_get_child_node_count(dev);
 
@@ -1842,7 +1842,7 @@ static int joypad_remove(struct platform_device *pdev)
 }
 /*----------------------------------------------------------------------------*/
 static const struct of_device_id joypad_of_match[] = {
-	{ .compatible = "rocknix-singleadc-joypad", },
+	{ .compatible = "singleadc-joypad", },
 	{},
 };
 

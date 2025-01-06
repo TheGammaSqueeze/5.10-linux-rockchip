@@ -383,4 +383,9 @@ config JOYSTICK_FSIA6B
 	  To compile this driver as a module, choose M here: the
 	  module will be called fsia6b.
 
+config JOYSTICK_ROCKNIX_SINGLEADC
+        tristate "ROCKNIX_SINGLEADC joypad driver"
+        help
+          Made for Rocknix devices.
+
 endif

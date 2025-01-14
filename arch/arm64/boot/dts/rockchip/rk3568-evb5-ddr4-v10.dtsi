@@ -52,7 +52,7 @@
 		vin-supply = <&vcc3v3_sys>;
 	};
 
-	vcc3v3_pcie: vcc3v3-pcie {
+	vcc3v3_pcie: gpio-regulator {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc3v3_pcie";
 		regulator-min-microvolt = <3300000>;
@@ -304,7 +304,6 @@
 		clock-names = "xvclk";
 		pinctrl-names = "default";
 		pinctrl-0 = <&cif_clk>;
-		power-domains = <&power RK3568_PD_VI>;
 		reset-gpios = <&gpio3 RK_PB6 GPIO_ACTIVE_LOW>;
 		pwdn-gpios = <&gpio4 RK_PB4 GPIO_ACTIVE_LOW>;
 		rockchip,grf = <&grf>;

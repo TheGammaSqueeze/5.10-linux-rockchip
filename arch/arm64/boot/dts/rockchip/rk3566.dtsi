@@ -8,10 +8,13 @@
 / {
 	aliases {
 		/delete-property/ ethernet0;
-		/delete-property/ lvds1;
 	};
 };
-
+/*
+&cpu0_opp_table {
+	/delete-node/ opp-1992000000;
+};
+*/
 &lpddr4_params {
 	/* freq info, freq_0 is final frequency, unit: MHz */
 	freq_0 = <1056>;
@@ -52,7 +55,6 @@
 /delete-node/ &gmac0_xpcsclk;
 /delete-node/ &gmac0;
 /delete-node/ &gmac_uio0;
-/delete-node/ &lvds1;
 /delete-node/ &pcie30_phy_grf;
 /delete-node/ &pcie30phy;
 /delete-node/ &pcie3x1;
@@ -61,5 +63,3 @@
 /delete-node/ &qos_pcie3x2;
 /delete-node/ &qos_sata0;
 /delete-node/ &sata0;
-/delete-node/ &vp1_out_lvds1;
-/delete-node/ &vp2_out_lvds1;

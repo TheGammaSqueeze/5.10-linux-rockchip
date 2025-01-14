@@ -18,7 +18,7 @@
 		status = "okay";
 		compatible = "simple-audio-card";
 		simple-audio-card,format = "dsp_a";
-		simple-audio-card,bitclock-inversion;
+		simple-audio-card,bitclock-inversion = <1>;
 		simple-audio-card,mclk-fs = <512>;
 		simple-audio-card,name = "rockchip,bt";
 		#simple-audio-card,bitclock-master = <&sound2_master>;
@@ -51,7 +51,7 @@
 		vin-supply = <&vcc3v3_sys>;
 	};
 
-	pcie30_3v3: pcie30-3v3 {
+	pcie30_3v3: gpio-regulator {
 		compatible = "regulator-gpio";
 		regulator-name = "pcie30_3v3";
 		regulator-min-microvolt = <100000>;
@@ -80,7 +80,7 @@
 		vin-supply = <&vcc3v3_sys>;
 	};
 
-	vcc3v3_pcie: vcc3v3-pcie {
+	vcc3v3_pcie: gpio-regulator {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc3v3_pcie";
 		regulator-min-microvolt = <3300000>;
@@ -207,7 +207,7 @@
 		     &gmac1m1_rgmii_bus
 		     &eth1m1_pins>;
 
-	tx_delay = <0x30>;
+	tx_delay = <0x47>;
 	rx_delay = <0x28>;
 
 	phy-handle = <&rgmii_phy1>;

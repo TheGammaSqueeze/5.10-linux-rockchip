@@ -47,8 +47,7 @@
 	gpio-keys-polled {
 		compatible = "gpio-keys-polled";
 		poll-interval = <10>;
-		debounce-interval=<10>;
-		status = "okay";
+        debounce-interval=<10>;
 		vol-up-button {
 				label = "vol up";
 				linux,code = <KEY_VOLUMEUP>;
@@ -176,11 +175,11 @@
 		};
 	};
 
-        vibrator {
-                compatible = "rk-vibrator-gpio";
-                vibrator-gpio = <&gpio0 RK_PB4 GPIO_ACTIVE_HIGH>;
-                status = "okay";
-        };
+	vibrator {
+		compatible = "rk-vibrator-gpio";
+		vibrator-gpio = <&gpio0 RK_PC4 GPIO_ACTIVE_HIGH>;
+		status = "okay";
+	};
 
 	backlight: backlight {
 		compatible = "pwm-backlight";
@@ -326,6 +325,16 @@
 		};
 	};
 	
+	wifi_usb: wifi-usb {
+		compatible = "regulator-fixed";
+		regulator-name = "wifi_usb";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		regulator-boot-on;
+		enable-active-low;
+		gpio = <&gpio0 RK_PA0 GPIO_ACTIVE_LOW>;
+	};
+
 	wireless-wlan {
 		compatible = "wlan-platdata";
 		rockchip,grf = <&grf>;
@@ -1196,3 +1205,4 @@
 	};
 
 };
+

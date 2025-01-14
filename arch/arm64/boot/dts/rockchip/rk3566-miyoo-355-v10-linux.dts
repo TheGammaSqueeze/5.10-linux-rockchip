@@ -325,16 +325,6 @@
 		};
 	};
 	
-	wifi_usb: wifi-usb {
-		compatible = "regulator-fixed";
-		regulator-name = "wifi_usb";
-		regulator-min-microvolt = <3300000>;
-		regulator-max-microvolt = <3300000>;
-		regulator-boot-on;
-		enable-active-low;
-		gpio = <&gpio0 RK_PA0 GPIO_ACTIVE_LOW>;
-	};
-
 	wireless-wlan {
 		compatible = "wlan-platdata";
 		rockchip,grf = <&grf>;
@@ -380,11 +370,6 @@
 &video_phy1 {
 	status = "disabled";
 };
-
-&vp0 {
-	cursor-win-id = <ROCKCHIP_VOP2_CLUSTER0>;
-};
-
 
 &bus_npu {
 	bus-supply = <&vdd_logic>;
@@ -1123,7 +1108,7 @@
 	rockchip,buffer-time-ms = <128>;
 	rockchip,det-channel = <0>;
 	rockchip,mode = <0>;
-	status = "okay";
+	status = "disabled";
 };
 
 &vdpu {

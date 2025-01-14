@@ -288,6 +288,12 @@
 	};
 
 	firmware {
+
+		optee: optee {
+			compatible = "linaro,optee-tz";
+			method = "smc";
+		};
+
 		scmi: scmi {
 			compatible = "arm,scmi-smc";
 			shmem = <&scmi_shmem>;
